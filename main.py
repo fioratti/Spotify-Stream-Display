@@ -12,16 +12,17 @@ if token:
 
     sp = spotipy.Spotify(auth=token)
 
+    #TODO Fix widget initialization
     # RETRIEVES SONG NAME
-    print(sp.currently_playing()['item']['name'])
+    #print(sp.currently_playing()['item']['name'])
     song_name = sp.currently_playing()['item']['name']
 
     # RETRIEVES ARTIST NAME
-    print(sp.currently_playing()['item']['artists'][0]['name'])
+    #print(sp.currently_playing()['item']['artists'][0]['name'])
     artist_name = sp.currently_playing()['item']['artists'][0]['name']
 
     # RETRIEVES ALBUM NAME
-    print(sp.currently_playing()['item']['album']['name'])
+    #print(sp.currently_playing()['item']['album']['name'])
     album = sp.currently_playing()['item']['album']['name']
 
     output_str = tk.StringVar()
@@ -34,6 +35,7 @@ if token:
     widget.update()
 
     while True:
+        #TODO Figure out cleaner way of detecting song change
         progress = sp.currently_playing()['progress_ms']
         duration = sp.currently_playing()['item']['duration_ms'] - 900
 
