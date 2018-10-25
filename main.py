@@ -3,6 +3,8 @@ import spotipy
 import spotipy.util as util
 from env import *
 
+# TODO Optimize code to compile into executable
+
 token = util.prompt_for_user_token(SPOTIFY_USERNAME, scope='user-read-playback-state', client_id=SPOTIFY_CLIENT_ID,
                                    client_secret=SPOTIFY_SECRET_ID, redirect_uri=SPOTIFY_REDIRECT_URI)
 
@@ -12,62 +14,49 @@ if token:
 
     sp = spotipy.Spotify(auth=token)
 
-    #TODO Fix widget initialization
+    # INITIALIZATION OF WIDGET
+    check_new_song = sp.currently_playing()['item']['name']
+
     # RETRIEVES SONG NAME
-    #print(sp.currently_playing()['item']['name'])
     song_name = sp.currently_playing()['item']['name']
 
     # RETRIEVES ARTIST NAME
-    #print(sp.currently_playing()['item']['artists'][0]['name'])
     artist_name = sp.currently_playing()['item']['artists'][0]['name']
-
-    # RETRIEVES ALBUM NAME
-    #print(sp.currently_playing()['item']['album']['name'])
-    album = sp.currently_playing()['item']['album']['name']
 
     output_str = tk.StringVar()
 
-    output_str.set('Current Song:\n%s\n%s\n%s' % (song_name, artist_name, album))
+    output_str.set('Current Song:\n%s\n%s' % (song_name, artist_name))
 
-    spotify_labels = tk.Label(widget, textvariable=output_str, bg='#00ff00', justify='left', font='Courier 44 bold', fg='white')
+    spotify_labels = tk.Label(widget, textvariable=output_str, bg='#00ff00', justify='left',
+                              font='Courier 44 bold', fg='white')
 
-    widget.update_idletasks()
+    spotify_labels.pack()
+
     widget.update()
 
     while True:
-        #TODO Figure out cleaner way of detecting song change
-        progress = sp.currently_playing()['progress_ms']
-        duration = sp.currently_playing()['item']['duration_ms'] - 900
+        if check_new_song != sp.currently_playing()['item']['name']:
 
-        widget.configure(bg='#00ff00')
-
-        #print(progress)
-        #print(duration)
-
-        if progress >= duration or progress < 900:
-
+            # CLEARS WIDGET TEXT FOR SONG UPDATE
             spotify_labels.destroy()
 
+            check_new_song = sp.currently_playing()['item']['name']
+
             # RETRIEVES SONG NAME
-            #print(sp.currently_playing()['item']['name'])
             song_name = sp.currently_playing()['item']['name']
 
             # RETRIEVES ARTIST NAME
-            #print(sp.currently_playing()['item']['artists'][0]['name'])
             artist_name = sp.currently_playing()['item']['artists'][0]['name']
-
-            # RETRIEVES ALBUM NAME
-            #print(sp.currently_playing()['item']['album']['name'])
-            album = sp.currently_playing()['item']['album']['name']
 
             output_str = tk.StringVar()
 
-            output_str.set('Current Song:\n%s\n%s\n%s' % (song_name, artist_name, album))
+            output_str.set('Current Song:\n%s\n%s' % (song_name, artist_name))
 
-            spotify_labels = tk.Label(widget, textvariable=output_str, bg='#00ff00', justify='left', font='Courier 44 bold', fg='white')
+            spotify_labels = tk.Label(widget, textvariable=output_str, bg='#00ff00', justify='left',
+                                      font='Courier 44 bold', fg='white')
+
             spotify_labels.pack()
 
-            widget.update_idletasks()
             widget.update()
 
 else:
